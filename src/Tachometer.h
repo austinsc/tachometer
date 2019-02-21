@@ -1,27 +1,15 @@
-#include <Arduino.h>
-#include "Tachometer.h"
+#ifndef __TACHOMETER_H
+#define __TACHOMETER_H
+#include <inttypes.h>
 
-Tachometer::Tachometer(uint8_t pin){
-    this->_pin = pin;
-}
+class Tachometer {
+    public:
+        Tachometer(uint8_t pin);
 
-unsigned long Tachometer::measure() {
-    unsigned long pulse = pulseIn(this->_pin, HIGH);
-    if(pulse > 0) {
-        return 60000000 / (pulse * this->_pulseCoefficient);
-    } else {
-        return 0;
-    }
-}
-
-bool Tachometer::calibrate() {
-    unsigned long pulseHigh = pulseIn(this->_pin, HIGH);
-    unsigned long pulseLow = pulseIn(this->_pin, LOW);
-    if(pulseHigh > 0 && pulseLow > 0) {
-        this->_pulseCoefficient = (pulseHigh / (pulseHigh + pulseLow)) + 1;
-        return true;
-    } else {
-        this->_pulseCoefficient = 1; 
-        return false;
-    }
-}
+        unsigned long measure();
+        bool calibrate();
+    private:
+        uint8_t _pin;
+        float _pulseCoefficient;
+};
+#endif
